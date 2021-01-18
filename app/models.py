@@ -14,11 +14,12 @@ from app import db
 
 class User(db.Model):
     __tablename__ = 'user'
+
     id = db.Column(db.Integer, primary_key=True)
     username = db.Column(db.String(80), unique=True, nullable=False)
     email = db.Column(db.String(120), unique=True, nullable=False)
 
-    posts = db.relationship('Post', backref=db.backref('user', lazy='dynamic'))
+    posts = db.relationship('Post', backref='user', lazy='dynamic')
 
     def __repr__(self):
         return '<User %r>' % self.username
@@ -26,6 +27,7 @@ class User(db.Model):
 
 class Post(db.Model):
     __tablename__ = 'post'
+
     id = db.Column(db.Integer, primary_key=True)
     title = db.Column(db.String(80), nullable=False)
     body = db.Column(db.Text, nullable=False)
@@ -34,7 +36,6 @@ class Post(db.Model):
 
     user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
     category_id = db.Column(db.Integer, db.ForeignKey('category.id'), nullable=False)
-    category = db.relationship('Category', backref=db.backref('posts', lazy='dynamic'))
 
     def __repr__(self):
         return '<Post %r>' % self.title
@@ -42,8 +43,11 @@ class Post(db.Model):
 
 class Category(db.Model):
     __tablename__ = 'category'
+
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(50), nullable=False)
+
+    posts = db.relationship('Post', backref='category', lazy='dynamic')
 
     def __repr__(self):
         return '<Category %r>' % self.name

@@ -18,4 +18,7 @@ def create_app(config_name):
     # FlaskMigrate默认对字段属性的变动是不做检查的,所以需要添加如下配置项参数
     migrate.init_app(app, db, compare_type=True, compare_server_default=True)
 
+    from .apis.v1 import api as api_v1_blueprint
+    app.register_blueprint(api_v1_blueprint, url_prefix='/api/v1')
+
     return app
