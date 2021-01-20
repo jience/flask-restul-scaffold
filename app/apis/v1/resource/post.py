@@ -7,10 +7,10 @@
 @File      :post.py
 @Desc      :
 """
-from flask import abort
-from flask_restful import Resource, fields, marshal_with
+from flask_restful import Resource, fields, marshal
 
 from app.models import Post
+from app.common.errors import generate_response, api_abort
 
 
 # 格式化输出
@@ -18,19 +18,21 @@ post_fields = {
     'id': fields.Integer(),
     'title': fields.String(),
     'body': fields.String(),
-    'pub_date': fields.DateTime(dt_format='iso8601')
+    'pub_date': fields.DateTime(dt_format='iso8601'),
+    'user_url': fields.Url(attribute='user_id', endpoint='.user', absolute=True),
+    'category_url': fields.Url(attribute='category_id', endpoint='.category', absolute=True),
+    'self': fields.Url(attribute='id', endpoint='.post', absolute=True)
 }
 
 
 class PostResource(Resource):
-    @marshal_with(post_fields)
-    def get(self, post_id=None):
-        if post_id:
-            post = Post.query.get(post_id)
+    def get(self, id=None):
+        if id:
+            post = Post.query.get(id)
             if not post:
-                abort(404)
+                api_abort(404)
 
-            return post
+            return generate_response(marshal(post, post_fields))
 
         posts = Post.query.all()
-        return posts
+        return generate_response(marshal(posts, post_fields))

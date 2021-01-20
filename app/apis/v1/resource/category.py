@@ -7,28 +7,28 @@
 @File      :category.py
 @Desc      :
 """
-from flask import abort
-from flask_restful import Resource, fields, marshal_with
+from flask_restful import Resource, fields, marshal
 
 from app.models import Category
+from app.common.errors import generate_response, api_abort
 
 
 # 格式化输出
 category_fields = {
     'id': fields.Integer(),
-    'name': fields.String()
+    'name': fields.String(),
+    'self': fields.Url(attribute='id', endpoint='.category', absolute=True),
 }
 
 
 class CategoryResource(Resource):
-    @marshal_with(category_fields)
-    def get(self, category_id=None):
-        if category_id:
-            category = Category.query.get(category_id)
+    def get(self, id=None):
+        if id:
+            category = Category.query.get(id)
             if not category:
-                abort(404)
+                api_abort(404)
 
-            return category
+            return generate_response(marshal(category, category_fields))
 
         categories = Category.query.all()
-        return categories
+        return generate_response(marshal(categories, category_fields))

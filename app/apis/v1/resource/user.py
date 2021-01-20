@@ -7,29 +7,29 @@
 @File      :user.py
 @Desc      :
 """
-from flask import abort
-from flask_restful import Resource, fields, marshal_with
+from flask_restful import Resource, fields, marshal
 
 from app.models import User
+from app.common.errors import generate_response, api_abort
 
 
 # 格式化输出
 user_fields = {
     'id': fields.Integer(),
     'username': fields.String(),
-    'email': fields.String()
+    'email': fields.String(),
+    'self': fields.Url(attribute='id', endpoint='.user', absolute=True)  # 需要注意的是url里面的参数名必须和主键(例如:id)一致
 }
 
 
 class UserResource(Resource):
-    @marshal_with(user_fields)
-    def get(self, user_id=None):
-        if user_id:
-            user = User.query.get(user_id)
+    def get(self, id=None):
+        if id:
+            user = User.query.get(id)
             if not user:
-                abort(404)
+                api_abort(404)
 
-            return user
+            return generate_response(marshal(user, user_fields))
 
         users = User.query.all()
-        return users
+        return generate_response(marshal(users, user_fields))
