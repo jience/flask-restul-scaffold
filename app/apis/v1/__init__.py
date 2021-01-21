@@ -9,6 +9,6 @@
 """
 from flask import Blueprint
 
-api = Blueprint('api', __name__)
+api_v1 = Blueprint('api', __name__)
 
-from . import urls
+from . import urls, errors

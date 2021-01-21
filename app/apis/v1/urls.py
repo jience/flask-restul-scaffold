@@ -10,16 +10,16 @@
 
 from flask_restful import Api
 
-from . import api
+from . import api_v1
 from app.apis.v1.resource.user import UserResource
 from app.apis.v1.resource.post import PostResource
 from app.apis.v1.resource.category import CategoryResource
 
-api_v1 = Api(api)
+api = Api(api_v1, catch_all_404s=False)
 
-api_v1.add_resource(UserResource, '/user/<int:id>', endpoint='user')
-api_v1.add_resource(UserResource, '/user', endpoint='users')
-api_v1.add_resource(PostResource, '/post/<int:id>', endpoint='post')
-api_v1.add_resource(PostResource, '/post', endpoint='posts')
-api_v1.add_resource(CategoryResource, '/category/<int:id>', endpoint='category')
-api_v1.add_resource(CategoryResource, '/category', endpoint='categories')
+api.add_resource(UserResource, '/user/<int:id>', endpoint='user')
+api.add_resource(UserResource, '/user', endpoint='users')
+api.add_resource(PostResource, '/post/<int:id>', endpoint='post')
+api.add_resource(PostResource, '/post', endpoint='posts')
+api.add_resource(CategoryResource, '/category/<int:id>', endpoint='category')
+api.add_resource(CategoryResource, '/category', endpoint='categories')

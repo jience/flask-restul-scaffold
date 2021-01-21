@@ -59,4 +59,7 @@ def api_abort(http_status_code, **kwargs):
     elif http_status_code == 404:
         abort(404, **generate_response(data=kwargs.get("data"), message=ResponseCode.msg[ResponseCode.CODE_NOT_FOUND],
                                        status=ResponseCode.CODE_NOT_FOUND))
+    elif http_status_code == 500:
+        abort(500, **generate_response(data=kwargs.get("data"), message=ResponseCode.msg[ResponseCode.CODE_SERVER_ERROR],
+                                       status=ResponseCode.CODE_SERVER_ERROR))
     abort(http_status_code)
